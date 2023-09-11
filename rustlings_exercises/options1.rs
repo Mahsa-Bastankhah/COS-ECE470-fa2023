@@ -7,8 +7,18 @@
         // We use the 24-hour system here, so 10PM is a value of 22 and 12AM is a
         // value of 0 The Option output should gracefully handle cases where
         // time_of_day > 23.
-        // TODO: Complete the function body - remember to return an Option!
-        ???
+        let mut option;
+        if time_of_day < 22 {
+            option = Some(5)
+        }
+        else if time_of_day >23 {
+            option = None
+        }
+        else {
+            option = Some(0)
+        }
+        option
+
     }
     
     #[cfg(test)]
@@ -29,7 +39,7 @@
             // TODO: Fix this test. How do you get at the value contained in the
             // Option?
             let icecreams = maybe_icecream(12);
-            assert_eq!(icecreams, 5);
+            assert_eq!(icecreams, Some(5));
         }
     }
     
