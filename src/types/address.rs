@@ -1,4 +1,5 @@
 use serde::{Serialize, Deserialize};
+use ring::digest;
 
 // 20-byte address
 #[derive(Eq, PartialEq, Serialize, Deserialize, Clone, Hash, Default, Copy)]
@@ -48,7 +49,14 @@ impl std::fmt::Debug for Address {
 
 impl Address {
     pub fn from_public_key_bytes(bytes: &[u8]) -> Address {
-        unimplemented!()
+        // Compute the SHA-256 hash of the input bytes
+        let sha256_hash = digest::digest(&digest::SHA256, bytes);
+    
+        // Take the last 20 bytes of the hash
+        let mut address_bytes = [0u8; 20];
+        address_bytes.copy_from_slice(&sha256_hash.as_ref()[12..32]);
+    
+        Address(address_bytes)  
     }
 }
 // DO NOT CHANGE THIS COMMENT, IT IS FOR AUTOGRADER. BEFORE TEST
@@ -61,7 +69,7 @@ mod test {
     fn from_a_test_key() {
         let test_key = hex!("0a0b0c0d0e0f0e0d0a0b0c0d0e0f0e0d0a0b0c0d0e0f0e0d0a0b0c0d0e0f0e0d");
         let addr = Address::from_public_key_bytes(&test_key);
-        let correct_addr: Address = hex!("1851a0eae0060a132cf0f64a0ffaea248de6cba0").into();
+        let correct_addr :Address = hex!("1851a0eae0060a132cf0f64a0ffaea248de6cba0").into();
         assert_eq!(addr, correct_addr);
         // "b69566be6e1720872f73651d1851a0eae0060a132cf0f64a0ffaea248de6cba0" is the hash of
         // "0a0b0c0d0e0f0e0d0a0b0c0d0e0f0e0d0a0b0c0d0e0f0e0d0a0b0c0d0e0f0e0d"
